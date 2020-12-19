@@ -91,4 +91,31 @@ if args.w: #write on image -w
     png.from_array(pixels, 'RGBA').save('output.png')  
     print("message cachée dans output.png")
 
+else: #read message from image
+    r=png.Reader(file_name)
+    pixels = []
+    for row in r.asRGBA8()[2]:
+        pixels.append(list(row))
+    #print(pixels)
 
+    bit_index = 0
+    char_index = 0
+    output_word_binary_ascii_list = [""]
+    print("decoder algo...")
+    for row in pixels:
+        for i in row:
+            if(bit_index < 8):            
+                if(i%2 != 0): 
+                    output_word_binary_ascii_list[char_index] += "1"
+                else:
+                    output_word_binary_ascii_list[char_index] += "0"
+                bit_index += 1
+            else:
+                if(i%2 == 0):
+                    output_word_binary_ascii_list.append("")
+                    char_index += 1
+                    bit_index = 0    
+                else:
+                    break
+        break                                
+    print("message: ",binaryToString(output_word_binary_ascii_list))
